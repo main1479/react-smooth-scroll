@@ -1,9 +1,12 @@
 import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import AnimatedCursor from 'react-animated-cursor';
 import useWindowSize from './hooks/useWindowSize';
 import './App.scss';
 
 import images from './images/images';
+gsap.registerPlugin(ScrollTrigger);
 
 function App() {
 	const size = useWindowSize();
@@ -16,6 +19,22 @@ function App() {
 
 	useEffect(() => {
 		requestAnimationFrame(() => smoothScrolling());
+		const tl = gsap.timeline({
+			scrollTrigger: {
+				trigger: '.img-container',
+				// toggleActions: 'restart none none reset',
+			},
+		});
+
+		tl.to('.img-container', 0, {
+			css: { visibility: 'visible' },
+		});
+		tl.to('.reveal', 1.4, { width: '0%', ease: 'Power2.easeInOut' });
+		tl.from('.img-container img', 1.4, {
+			scale: 1.6,
+			ease: 'Power2.easeInOut',
+			delay: -1.4,
+		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -60,6 +79,7 @@ function App() {
 							Skew <span className="outline">Scrolling</span>
 						</h2>
 						<div key={index} className="img-container">
+							<div className="reveal">&nbsp;</div>
 							<img src={image} alt={`people ${index}`} />
 						</div>
 					</React.Fragment>
